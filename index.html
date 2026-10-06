@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nusantara Retail · Sales Dashboard</title>
+  <meta name="description" content="Interactive sales performance dashboard for an Indonesian omnichannel retailer — revenue, profitability, products, customers and regional performance.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%232a78d6'/><rect x='7' y='16' width='4' height='9' rx='1.5' fill='white'/><rect x='14' y='11' width='4' height='14' rx='1.5' fill='white'/><rect x='21' y='6' width='4' height='19' rx='1.5' fill='white'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>
+    try { const t = localStorage.getItem('nr-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body>
+<div class="app">
+  <!-- Left navigation (report pages) -->
+  <nav class="nav" aria-label="Report pages">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="var(--series-1)"/><rect x="7" y="16" width="4" height="9" rx="1.5" fill="#fff"/><rect x="14" y="11" width="4" height="14" rx="1.5" fill="#fff"/><rect x="21" y="6" width="4" height="19" rx="1.5" fill="#fff"/></svg>
+      <div class="brand-text"><strong>Nusantara Retail</strong><span>Sales Analytics</span></div>
+    </div>
+    <ul class="pages" role="tablist">
+      <li><button class="page-btn active" data-page="overview" role="tab"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4zm0 7h6v-5H4zm10 0h6v-9h-6zm0-16v5h6V4z"/></svg><span>Overview</span></button></li>
+      <li><button class="page-btn" data-page="products" role="tab"><svg viewBox="0 0 24 24"><path d="M12 2 3 7v10l9 5 9-5V7zm0 2.3L18.7 8 12 11.7 5.3 8zM5 9.7l6 3.3v6.6l-6-3.3zm8 9.9V13l6-3.3v6.6z"/></svg><span>Products</span></button></li>
+      <li><button class="page-btn" data-page="customers" role="tab"><svg viewBox="0 0 24 24"><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8m0 2c-3.3 0-7 1.6-7 4v3h14v-3c0-2.4-3.7-4-7-4m8-2a3 3 0 1 0 0-6v6m1.5 2.2c1.6.8 3.5 2 3.5 3.8v3h-3v-3c0-1.5-.2-2.8-.5-3.8"/></svg><span>Customers</span></button></li>
+      <li><button class="page-btn" data-page="regional" role="tab"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5"/></svg><span>Regional</span></button></li>
+      <li><button class="page-btn" data-page="data" role="tab"><svg viewBox="0 0 24 24"><path d="M3 4h18v4H3zm0 6h18v4H3zm0 6h18v4H3z"/></svg><span>Data</span></button></li>
+    </ul>
+    <div class="nav-foot">
+      <button id="themeToggle" class="icon-btn" title="Toggle light / dark theme" aria-label="Toggle theme">
+        <svg class="i-sun" viewBox="0 0 24 24"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10M11 1h2v3h-2zm0 19h2v3h-2zM3.5 4.9l1.4-1.4 2.1 2.1-1.4 1.4zm12.7 12.7 1.4-1.4 2.1 2.1-1.4 1.4zM1 11h3v2H1zm19 0h3v2h-3zM4.9 20.5l-1.4-1.4 2.1-2.1 1.4 1.4zM17.6 7.8l-1.4-1.4 2.1-2.1 1.4 1.4z"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24"><path d="M12.4 3a9 9 0 1 0 8.6 11.6A7 7 0 0 1 12.4 3"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <!-- Header + slicers -->
+    <header class="topbar">
+      <div class="title-block">
+        <h1 id="pageTitle">Sales Overview</h1>
+        <p id="pageSub" class="muted">Revenue, profitability and target attainment</p>
+      </div>
+      <div class="top-actions">
+        <span id="dataStamp" class="stamp muted"></span>
+        <button id="resetBtn" class="btn ghost" title="Clear all filters">
+          <svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8"/></svg>Reset
+        </button>
+      </div>
+    </header>
+
+    <section class="slicers" aria-label="Filters">
+      <div class="slicer period">
+        <label>Period</label>
+        <div class="seg" id="periodPresets">
+          <button data-preset="2023">2023</button>
+          <button data-preset="2024">2024</button>
+          <button data-preset="2025" class="on">2025</button>
+          <button data-preset="h2-2025">H2 '25</button>
+          <button data-preset="all">All</button>
+        </div>
+        <div class="range">
+          <input type="month" id="dateFrom" aria-label="From month">
+          <span class="muted">→</span>
+          <input type="month" id="dateTo" aria-label="To month">
+        </div>
+      </div>
+      <div class="slicer dd" data-field="region"></div>
+      <div class="slicer dd" data-field="category"></div>
+      <div class="slicer dd" data-field="channel"></div>
+      <div class="slicer dd" data-field="segment"></div>
+    </section>
+
+    <div id="chips" class="chips" aria-live="polite"></div>
+
+    <!-- ============ PAGE: OVERVIEW ============ -->
+    <section class="page active" id="page-overview">
+      <div class="kpis" id="kpis"></div>
+      <div class="grid">
+        <article class="card span-8" data-viz="trend">
+          <header><h3>Revenue trend</h3><div class="card-tools"><div class="seg sm" id="grain"><button data-grain="week">Week</button><button data-grain="month" class="on">Month</button><button data-grain="quarter">Quarter</button></div></div></header>
+          <p class="card-sub">Current period vs. the same-length period before it</p>
+          <div class="chart" id="c-trend"></div>
+        </article>
+        <article class="card span-4" data-viz="channel">
+          <header><h3>Revenue by channel</h3></header>
+          <p class="card-sub">Click a slice to cross-filter</p>
+          <div class="chart" id="c-channel"></div>
+        </article>
+        <article class="card span-8" data-viz="target">
+          <header><h3>Actual vs. target</h3></header>
+          <p class="card-sub" id="targetSub">Monthly revenue against plan</p>
+          <div class="chart" id="c-target"></div>
+        </article>
+        <article class="card span-4" data-viz="attain">
+          <header><h3>Target attainment</h3></header>
+          <p class="card-sub">Selected period, cumulative</p>
+          <div class="chart" id="c-attain"></div>
+        </article>
+        <article class="card span-6" data-viz="category">
+          <header><h3>Revenue by category</h3></header>
+          <p class="card-sub">Click a bar to cross-filter</p>
+          <div class="chart" id="c-category"></div>
+        </article>
+        <article class="card span-6" data-viz="region">
+          <header><h3>Revenue by region</h3></header>
+          <p class="card-sub">Click a bar to cross-filter</p>
+          <div class="chart" id="c-region"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ PAGE: PRODUCTS ============ -->
+    <section class="page" id="page-products">
+      <div class="kpis" id="kpis-products"></div>
+      <div class="grid">
+        <article class="card span-7" data-viz="treemap">
+          <header><h3>Revenue mix · category → sub-category</h3></header>
+          <p class="card-sub">Area = revenue. Click a category to cross-filter</p>
+          <div class="chart tall" id="c-treemap"></div>
+        </article>
+        <article class="card span-5" data-viz="subprofit">
+          <header><h3>Profit by sub-category</h3></header>
+          <p class="card-sub">Loss-making lines shown in red</p>
+          <div class="chart tall" id="c-subprofit"></div>
+        </article>
+        <article class="card span-7" data-viz="topProducts">
+          <header><h3>Top products</h3><div class="card-tools"><div class="seg sm" id="topMetric"><button data-m="sales" class="on">Revenue</button><button data-m="profit">Profit</button><button data-m="quantity">Units</button></div></div></header>
+          <div class="table-wrap" id="t-top"></div>
+        </article>
+        <article class="card span-5" data-viz="discount">
+          <header><h3>Discount vs. margin</h3></header>
+          <p class="card-sub">Each dot is a sub-category · size = revenue</p>
+          <div class="chart tall" id="c-discount"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ PAGE: CUSTOMERS ============ -->
+    <section class="page" id="page-customers">
+      <div class="kpis" id="kpis-customers"></div>
+      <div class="grid">
+        <article class="card span-8" data-viz="newret">
+          <header><h3>New vs. returning customers</h3></header>
+          <p class="card-sub">Active customers per month</p>
+          <div class="chart" id="c-newret"></div>
+        </article>
+        <article class="card span-4" data-viz="segment">
+          <header><h3>Revenue by segment</h3></header>
+          <p class="card-sub">Click a bar to cross-filter</p>
+          <div class="chart" id="c-segment"></div>
+        </article>
+        <article class="card span-8" data-viz="cohort">
+          <header><h3>Cohort retention</h3></header>
+          <p class="card-sub">% of customers acquired in a quarter who ordered again N quarters later</p>
+          <div class="chart tall" id="c-cohort"></div>
+        </article>
+        <article class="card span-4" data-viz="payment">
+          <header><h3>Payment methods</h3></header>
+          <p class="card-sub">Share of orders</p>
+          <div class="chart tall" id="c-payment"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ PAGE: REGIONAL ============ -->
+    <section class="page" id="page-regional">
+      <div class="kpis" id="kpis-regional"></div>
+      <div class="grid">
+        <article class="card span-8" data-viz="map">
+          <header><h3>Revenue by province</h3><div class="card-tools"><div class="seg sm" id="mapMetric"><button data-m="sales" class="on">Revenue</button><button data-m="margin">Margin</button><button data-m="growth">Growth</button></div></div></header>
+          <p class="card-sub">Click a province to cross-filter · scroll to zoom</p>
+          <div class="chart map" id="c-map"></div>
+        </article>
+        <article class="card span-4" data-viz="province">
+          <header><h3>Top provinces</h3></header>
+          <p class="card-sub">By revenue in selected period</p>
+          <div class="chart map" id="c-province"></div>
+        </article>
+        <article class="card span-7" data-viz="matrix">
+          <header><h3>Regional scorecard</h3></header>
+          <div class="table-wrap" id="t-matrix"></div>
+        </article>
+        <article class="card span-5" data-viz="delivery">
+          <header><h3>Average delivery time</h3></header>
+          <p class="card-sub">Days from order to delivery, shipped orders only</p>
+          <div class="chart" id="c-delivery"></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ PAGE: DATA ============ -->
+    <section class="page" id="page-data">
+      <article class="card span-12">
+        <header>
+          <h3>Transactions</h3>
+          <div class="card-tools">
+            <input type="search" id="dataSearch" placeholder="Search order, product, city…" aria-label="Search transactions">
+            <button class="btn" id="exportBtn"><svg viewBox="0 0 24 24"><path d="M12 16 7 11l1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11zm-7 4v-2h14v2z"/></svg>Export CSV</button>
+          </div>
+        </header>
+        <p class="card-sub" id="dataInfo"></p>
+        <div class="table-wrap" id="t-data"></div>
+        <div class="pager" id="pager"></div>
+      </article>
+    </section>
+
+    <footer class="foot muted">
+      Built with ECharts · Data model: order-line grain, 2023–2025 · <a href="https://github.com/haikalfr04/Sales-Dashboard" target="_blank" rel="noopener">Source on GitHub</a>
+    </footer>
+  </main>
+</div>
+
+<!-- Focus mode overlay -->
+<div class="focus" id="focus" hidden>
+  <div class="focus-inner">
+    <header><h3 id="focusTitle"></h3><button class="icon-btn" id="focusClose" aria-label="Close focus mode"><svg viewBox="0 0 24 24"><path d="m6.4 5 5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19 5 17.6l5.6-5.6L5 6.4z"/></svg></button></header>
+    <div id="focusBody" class="focus-body"></div>
+  </div>
+</div>
+
+<div class="loader" id="loader"><div class="spinner"></div><p>Loading sales data…</p></div>
+<div class="tooltip-kpi" id="kpiTip" hidden></div>
+
+<script src="assets/vendor/echarts.min.js"></script>
+<script src="assets/vendor/papaparse.min.js"></script>
+<script type="module" src="assets/js/app.js"></script>
+</body>
+</html>
