@@ -1,139 +1,138 @@
-# Nusantara Retail — Sales Performance Dashboard
+# Nusantara Retail Sales Dashboard
 
-An interactive, Power BI / Looker Studio–style sales dashboard for an Indonesian omnichannel retailer. It covers revenue, profitability, target attainment, product mix, customer retention and regional performance across all 34 provinces.
+This interactive dashboard presents the sales performance of Nusantara Retail, a retail company that sells products throughout Indonesia. The company sells through four channels: its own online store, online marketplaces, physical stores, and a business-to-business (B2B) sales team.
+
+The dashboard follows the style of business intelligence tools such as Power BI and Looker Studio. Users can filter the data, click on charts to explore specific segments, and compare results with earlier periods.
+
+**Live demo:** https://haikalfr04.github.io/Sales-Dashboard/
 
 ![Sales overview](docs/overview.png)
 
-> **Live demo:** after GitHub Pages is enabled (see [Deployment](#deployment)), the dashboard is available at
-> `https://haikalfr04.github.io/Sales-Dashboard/`
-
 ---
 
-## Business questions
+## Objectives
 
-| Page | Questions it answers |
+The dashboard is designed to answer the following business questions:
+
+1. How are sales and profit developing over time, and how do they compare with the previous period?
+2. Is the company meeting its monthly sales targets?
+3. Which products, categories, and sales channels contribute the most revenue, and which ones generate losses?
+4. How many new customers does the company acquire, and how many of them return to purchase again?
+5. Which regions and provinces of Indonesia generate the most sales, and where is growth the fastest?
+
+## Dashboard Pages
+
+| Page | Content |
 |---|---|
-| **Overview** | How is revenue trending against the prior period? Are we hitting the monthly plan? Which channels, categories and regions drive the business? |
-| **Products** | What does the revenue mix look like? Which sub-categories lose money? Which products sell best? Does discounting hurt margin? |
-| **Customers** | How many new vs. returning customers do we have each month? How well do acquisition cohorts retain? Which segments and payment methods matter? |
-| **Regional** | Where are sales concentrated across Indonesia? Which regions grow fastest? How long does delivery take outside Java? |
-| **Data** | Searchable, sortable order-line detail for the current filter context, exportable to CSV. |
-
-## Features
-
-- **Report pages and a global filter pane:** period presets (2023 / 2024 / 2025 / H2 / All), a custom month range, and multi-select slicers for Region, Category, Channel and Segment.
-- **Cross-filtering:** click a bar, donut slice, treemap tile, map province or table row to filter every visual. Ctrl/⌘/Shift-click adds to the selection. The clicked visual keeps its other members visible but dimmed, the same way Power BI highlights a selection.
-- **Filter chips** show every active filter and let you remove each one individually.
-- **Time-intelligence KPIs:** each KPI card compares the selected period with the same-length period before it and includes a monthly sparkline.
-- **Actual vs. target:** monthly targets are set per region, with an attainment gauge whose colour shows status (on target, slightly behind, behind).
-- **Visual header menu** on every card, like Power BI:
-  - *Show as table*
-  - *Focus mode* (full screen)
-  - *Export data* (CSV of that visual)
-- **Indonesia choropleth map** with Revenue, Margin and Growth (diverging) views, plus zoom and pan.
-- **Cohort retention heatmap**, a **discount vs. margin** bubble chart, a profit-by-sub-category diverging bar chart, and a top-products table.
-- **Shareable state:** the page, period and filters are stored in the URL hash.
-- **Light and dark theme**, responsive down to phone width.
+| **Overview** | Key performance figures, the monthly sales trend, sales compared with targets, and sales by channel, category, and region. |
+| **Products** | The share of sales by category and sub-category, profit by sub-category, the ten best-selling products, and the relationship between discounts and profit margin. |
+| **Customers** | New and returning customers per month, customer retention over time, sales by customer segment, and preferred payment methods. |
+| **Regional** | A map of sales by province, the top provinces, a summary table for each region, and average delivery times. |
+| **Data** | A searchable and sortable table of all transactions that match the selected filters. The table can be downloaded as a CSV file. |
 
 | | |
 |---|---|
-| ![Products (dark)](docs/products-dark.png) | ![Regional](docs/regional.png) |
+| ![Products page in dark mode](docs/products-dark.png) | ![Regional page](docs/regional.png) |
 
-## Data model
+## Main Features
 
-Each row of `data/sales.csv` is one **order line** (26k rows, Jan 2023 – Dec 2025).
+- **Filters:** Users can select a time period (2023, 2024, 2025, the second half of 2025, or all years) or set a custom range of months. Users can also filter by region, product category, sales channel, and customer segment.
+- **Interactive charts:** Clicking a bar, a slice, a map area, or a table row filters the entire dashboard to that item. Holding Ctrl (or Cmd on Mac) while clicking selects several items at once.
+- **Active filter list:** All applied filters are shown above the charts, and each one can be removed with a single click.
+- **Comparison with the previous period:** Each key figure shows the change compared with the previous period of the same length, together with a small trend line.
+- **Sales targets:** Monthly sales are compared with the target for each region, and a gauge shows the percentage of the target achieved.
+- **Chart options:** Every chart can be displayed as a table, enlarged to full screen, or downloaded as a CSV file.
+- **Shareable links:** The selected page and filters are saved in the page address, so a specific view can be shared with other people.
+- **Light and dark mode:** The dashboard adapts to desktop, tablet, and mobile screens.
+
+## Data
+
+The dashboard uses two data files, located in the `data` folder.
+
+**`sales.csv`** contains about 26,000 rows of sales transactions from January 2023 to December 2025. Each row represents one product within an order.
 
 | Column | Description |
 |---|---|
-| `order_id`, `order_date` | Order key and date |
-| `customer_id`, `segment` | Customer and segment (Consumer / SME / Corporate) |
-| `channel` | Marketplace, Online Store, Retail Store, B2B Sales |
-| `payment_method`, `ship_mode`, `delivery_days` | Fulfilment attributes |
-| `region`, `province`, `city` | Geography (6 regions, 34 provinces) |
-| `product_id`, `category`, `sub_category`, `product_name` | Product hierarchy |
-| `quantity`, `unit_price`, `discount` | Line pricing |
-| `sales`, `cost`, `profit` | Measures (IDR) |
-| `returned` | 1 if the order was returned |
+| `order_id`, `order_date` | Order number and order date |
+| `customer_id`, `segment` | Customer number and customer type (Consumer, SME, or Corporate) |
+| `channel` | Sales channel (Marketplace, Online Store, Retail Store, or B2B Sales) |
+| `payment_method` | Payment method used by the customer |
+| `ship_mode`, `delivery_days` | Shipping method and number of days needed for delivery |
+| `region`, `province`, `city` | Customer location (6 regions and 34 provinces) |
+| `product_id`, `category`, `sub_category`, `product_name` | Product information |
+| `quantity`, `unit_price`, `discount` | Number of units, price per unit, and discount given |
+| `sales`, `cost`, `profit` | Sales value, cost, and profit in Indonesian Rupiah |
+| `returned` | Indicates whether the order was returned (1 = yes, 0 = no) |
 
-`data/targets.csv` holds the monthly revenue target per region (`month`, `region`, `target_sales`).
+**`targets.csv`** contains the monthly sales target for each region.
 
-The dataset is produced by `scripts/build_dataset.py`. The script is reproducible (fixed seed, standard library only) and models realistic business patterns:
+The data is produced by the script `scripts/build_dataset.py`. The script reflects common patterns in Indonesian retail, including:
 
-- year-over-year growth, with faster growth outside Java
-- a channel shift towards digital
-- the Ramadan / Lebaran peak and the post-Lebaran dip
-- 9.9 / 10.10 / 11.11 / 12.12 campaign spikes
-- payday effects and B2B bulk orders
-- marketplace fees and returns
+- annual business growth, with faster growth outside Java
+- a gradual shift from physical stores to online channels
+- higher sales during Ramadan and lower sales after Eid al-Fitr
+- sales peaks during online shopping events such as 11.11 and 12.12
+- higher spending around payday
+- large orders from business customers
+- marketplace fees and product returns
+
+To recreate the data, run:
 
 ```bash
 python scripts/build_dataset.py
 ```
 
-### Key measures (DAX-style definitions)
+## Calculation Definitions
+
+| Measure | Definition |
+|---|---|
+| Revenue | Total sales value |
+| Gross profit | Total sales minus total cost |
+| Profit margin | Gross profit divided by revenue |
+| Orders | Number of unique orders |
+| Average order value | Revenue divided by the number of orders |
+| Average discount | Percentage reduction from the original price |
+| Return rate | Percentage of orders that were returned |
+| New customers | Customers whose first purchase falls within the selected period |
+| Repeat-purchase rate | Percentage of customers who placed two or more orders in the selected period |
+| Target achievement | Revenue divided by the sales target |
+| Previous period | The same number of months immediately before the selected period |
+
+## Tools Used
+
+- **HTML, CSS, and JavaScript** for the dashboard. No additional framework or build step is required.
+- **[Apache ECharts](https://echarts.apache.org/)** for the charts and the map.
+- **[Papa Parse](https://www.papaparse.com/)** for reading the CSV files.
+- **Python** (standard library only) for preparing the data.
+- **Province map data** from public BAKOSURTANAL and Dukcapil boundary data, obtained through [ans-4175/peta-indonesia-geojson](https://github.com/ans-4175/peta-indonesia-geojson) and simplified for faster loading.
+
+## Project Structure
 
 ```
-Revenue          = SUM(sales)
-Gross Profit     = SUM(profit)
-Profit Margin    = [Gross Profit] / [Revenue]
-Orders           = DISTINCTCOUNT(order_id)
-AOV              = [Revenue] / [Orders]
-Avg Discount     = 1 - [Revenue] / SUMX(quantity * unit_price)
-Return Rate      = DISTINCTCOUNT(order_id WHERE returned = 1) / [Orders]
-New Customers    = customers whose first-ever order falls in the selected period
-Repeat Rate      = customers with ≥ 2 orders in period / active customers
-Target Attain.   = [Revenue] / SUM(target_sales)      -- region grain only
-Prior Period     = same measure over the same number of months immediately before
-```
-
-## Tech stack
-
-- **Plain HTML, CSS and JavaScript (ES modules).** No build step and no framework.
-- **[Apache ECharts](https://echarts.apache.org/)** for the charts and the map, and **[Papa Parse](https://www.papaparse.com/)** for CSV parsing. Both are vendored in `assets/vendor/`.
-- **Python** (standard library only) for the data pipeline.
-- The province boundaries come from public BAKOSURTANAL / Dukcapil boundary data (via [ans-4175/peta-indonesia-geojson](https://github.com/ans-4175/peta-indonesia-geojson)), simplified for the web.
-
-```
-├── index.html                 # report layout (pages, slicers, cards)
+├── index.html                  Page layout
 ├── assets/
-│   ├── css/style.css          # design tokens (light/dark), layout
-│   ├── js/app.js              # state, filtering, cross-filter, all visuals
-│   ├── js/util.js             # formatting, aggregation, theme tokens
-│   ├── geo/                   # Indonesia province GeoJSON
-│   └── vendor/                # echarts, papaparse
-├── data/                      # sales.csv, targets.csv
-├── scripts/build_dataset.py   # data pipeline
-└── .github/workflows/pages.yml
+│   ├── css/style.css           Visual styling, including light and dark mode
+│   ├── js/app.js               Filters, charts, and interactions
+│   ├── js/util.js              Number formatting and calculation helpers
+│   ├── geo/                    Indonesia province map
+│   └── vendor/                 ECharts and Papa Parse libraries
+├── data/                       sales.csv and targets.csv
+├── scripts/build_dataset.py    Data preparation script
+├── docs/                       Screenshots
+└── .github/workflows/pages.yml Automatic publishing to GitHub Pages
 ```
 
-## Run locally
+## Running the Dashboard Locally
 
-The dashboard loads CSV files with `fetch`, so it has to be served over HTTP:
+The dashboard reads its data from files, so it must be opened through a local web server rather than directly from the folder.
 
-```bash
-python -m http.server 8000
-# open http://localhost:8000
-```
+1. Open a terminal in the project folder.
+2. Run the following command:
+   ```bash
+   python -m http.server 8000
+   ```
+3. Open `http://localhost:8000` in a web browser.
 
-## Deployment
+## Publishing
 
-The repository includes a GitHub Actions workflow that publishes the site to GitHub Pages:
-
-1. Go to **Settings → Pages**.
-2. Under **Build and deployment → Source**, choose **GitHub Actions**.
-3. Push to `main`. The workflow deploys the site to `https://haikalfr04.github.io/Sales-Dashboard/`.
-
----
-
-### Ringkasan (Bahasa Indonesia)
-
-Dashboard penjualan interaktif bergaya Power BI untuk perusahaan ritel omnichannel di Indonesia. Dashboard ini menampilkan:
-
-- KPI dengan perbandingan terhadap periode sebelumnya
-- realisasi vs. target per wilayah
-- analisis produk, kohort retensi pelanggan
-- peta penjualan per provinsi
-
-Semua visual saling terhubung lewat **cross-filter**: klik satu elemen, dan seluruh dashboard ikut terfilter. Setiap visual juga punya tiga menu: tampilkan sebagai tabel, focus mode, dan ekspor CSV.
-
-Untuk menjalankannya secara lokal: `python -m http.server`, lalu buka `http://localhost:8000`.
+The dashboard is published automatically to GitHub Pages each time changes are pushed to the `main` branch. To enable publishing in a new copy of this repository, open **Settings → Pages** and set **Source** to **GitHub Actions**.
